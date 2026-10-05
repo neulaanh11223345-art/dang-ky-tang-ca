@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Đăng ký Tăng ca — Credible Việt Nam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<style>
+:root{
+  --bg:#f4f7fa;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
+  --accent:#1d6fb0;
+  --accent-soft:rgba(29,111,176,.12);
+  --accent2:#c85a3a;
+  --accent2-soft:rgba(200,90,58,.12);
+  --border:rgba(15,23,42,.10);
+  --ok:#0d9669;
+  --ok-soft:rgba(13,150,105,.12);
+  --radius:14px;
+  --shadow:0 1px 3px rgba(15,23,42,.06),0 8px 24px rgba(15,23,42,.05);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  font-family:'IBM Plex Sans',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.55;
+  min-height:100vh;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.app{max-width:680px;margin:0 auto;padding:16px 14px 90px}
+
+/* ---------- Header ---------- */
+.topbar{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 16px;background:var(--card);
+  border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow);margin-bottom:14px;
+}
+.topbar .logo{
+  width:44px;height:44px;flex:none;border-radius:11px;
+  background:linear-gradient(135deg,var(--accent),#3a8fd0);
+  display:flex;align-items:center;justify-content:center;color:#fff;
+}
+.topbar h1{font-size:17px;margin:0;font-weight:700;letter-spacing:-.01em}
+.topbar p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+
+/* ---------- Tabs ---------- */
+.tabs{
+  display:grid;grid-template-columns:1fr 1fr;gap:6px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:5px;margin-bottom:14px;
+  position:sticky;top:8px;z-index:20;box-shadow:var(--shadow);
+}
+.tab{
+  border:none;background:transparent;padding:11px 8px;border-radius:10px;
+  font-size:14px;font-weight:600;color:var(--muted);cursor:pointer;
+  font-family:inherit;display:flex;align-items:center;justify-content:center;gap:7px;
+  transition:all .18s ease;
+}
+.tab.active{background:var(--accent);color:#fff;box-shadow:0 4px 12px rgba(29,111,176,.35)}
+.tab svg{width:17px;height:17px}
+
+/* ---------- Cards / form ---------- */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:16px;margin-bottom:14px;
+  box-shadow:var(--shadow);
+}
+.card h2{
+  font-size:14px;margin:0 0 14px;font-weight:700;
+  display:flex;align-items:center;gap:8px;color:var(--text);
+  text-transform:uppercase;letter-spacing:.04em;
+}
+.card h2 .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex:none}
+.card h2 .count{
+  margin-left:auto;background:var(--accent-soft);color:var(--accent);
+  font-size:11px;padding:2px 9px;border-radius:999px;font-weight:700;
+}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field{margin-bottom:12px}
+.field:last-child{margin-bottom:0}
+.field label{
+  display:block;font-size:12px;font-weight:600;color:var(--muted);
+  margin-bottom:5px;letter-spacing:.02em;
+}
+.field label .zh{font-weight:400;font-size:11px;margin-left:4px}
+.field input,.field select,.field textarea{
+  width:100%;padding:11px 12px;border:1.5px solid var(--border);
+  border-radius:10px;font-size:15px;font-family:inherit;color:var(--text);
+  background:#fbfcfe;transition:border-color .15s,box-shadow .15s;
+  -webkit-appearance:none;appearance:none;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;border-color:var(--accent);
+  box-shadow:0 0 0 3px var(--accent-soft);background:#fff;
+}
+.field textarea{resize:vertical;min-height:44px}
+
+/* ---------- OT entries ---------- */
+.entry{
+  border:1.5px solid var(--border);border-radius:12px;padding:12px;
+  margin-bottom:10px;background:#fbfcfe;position:relative;
+  animation:slideIn .25s ease;
+}
+@keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.entry-head{
+  display:flex;align-items:center;gap:8px;margin-bottom:10px;
+}
+.entry-num{
+  width:26px;height:26px;border-radius:8px;background:var(--accent-soft);
+  color:var(--accent);font-weight:700;font-size:13px;
+  display:flex;align-items:center;justify-content:center;flex:none;
+}
+.entry-head .shift-tag{
+  margin-left:auto;font-size:11px;font-weight:700;padding:3px 9px;
+  border-radius:999px;background:var(--accent2-soft);color:var(--accent2);
+}
+.entry-head .del{
+  border:none;background:transparent;color:var(--muted);cursor:pointer;
+  padding:4px;border-radius:7px;display:flex;align-items:center;justify-content:center;
+}
+.entry-head .del:hover{background:#fee2e2;color:#dc2626}
+.entry-head .del svg{width:18px;height:18px}
+.entry .grid2{gap:8px}
+.entry .hours{
+  display:flex;align-items:center;gap:8px;margin-top:10px;
+  padding:9px 12px;border-radius:9px;background:var(--ok-soft);
+}
+.entry .hours .lbl{font-size:12px;color:var(--muted);font-weight:600}
+.entry .hours input{
+  width:74px;padding:6px 8px;border:1.5px solid rgba(13,150,105,.35);
+  border-radius:7px;font-size:15px;font-weight:700;color:var(--ok);
+  background:#fff;text-align:center;font-family:inherit;
+}
+.entry .hours .unit{font-size:12px;color:var(--muted)}
+
+.add-btn{
+  width:100%;padding:13px;border:1.5px dashed var(--accent);
+  background:var(--accent-soft);color:var(--accent);border-radius:12px;
+  font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:all .15s;
+}
+.add-btn:hover{background:rgba(29,111,176,.2)}
+.add-btn svg{width:18px;height:18px}
+
+/* ---------- Total bar ---------- */
+.total-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 16px;border-radius:12px;
+  background:linear-gradient(135deg,var(--accent),#2a82c4);color:#fff;
+  margin-bottom:14px;box-shadow:0 6px 18px rgba(29,111,176,.3);
+}
+.total-bar .lbl{font-size:13px;opacity:.9;font-weight:500}
+.total-bar .val{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.total-bar .val small{font-size:13px;font-weight:500;opacity:.85;margin-left:3px}
+
+/* ---------- Action buttons ---------- */
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.btn{
+  padding:13px 14px;border-radius:11px;font-size:14px;font-weight:700;
+  cursor:pointer;font-family:inherit;border:none;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  transition:transform .1s,box-shadow .15s;
+}
+.btn:active{transform:scale(.97)}
+.btn svg{width:18px;height:18px}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 4px 14px rgba(29,111,176,.35)}
+.btn-ok{background:var(--ok);color:#fff;box-shadow:0 4px 14px rgba(13,150,105,.3)}
+.btn-ghost{background:var(--card);color:var(--muted);border:1.5px solid var(--border)}
+.btn-danger{background:#fff;color:#dc2626;border:1.5px solid #fecaca}
+
+/* ---------- Toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);
+  background:#0f172a;color:#fff;padding:11px 20px;border-radius:999px;
+  font-size:13px;font-weight:600;opacity:0;pointer-events:none;
+  transition:all .3s ease;z-index:100;box-shadow:0 8px 24px rgba(0,0,0,.25);
+  display:flex;align-items:center;gap:8px;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast svg{width:16px;height:16px;color:#4ade80}
+
+/* ---------- Preview (A4 form) ---------- */
+.pane{display:none}
+.pane.active{display:block}
+
+.preview-wrap{background:#e2e8f0;padding:14px;border-radius:var(--radius);margin-bottom:14px;overflow-x:auto}
+#printArea{
+  background:#fff;width:720px;max-width:100%;margin:0 auto;
+  padding:34px 36px 28px;color:#000;
+  font-family:'Times New Roman','IBM Plex Serif',serif;
+  box-shadow:0 4px 20px rgba(0,0,0,.12);
+}
+#printArea .co{text-align:center;font-size:15px;font-weight:700;line-height:1.4}
+#printArea .co .zh{font-size:13px;font-weight:600}
+#printArea .title{
+  text-align:center;font-size:20px;font-weight:700;margin:10px 0 2px;
+  letter-spacing:.06em;
+}
+#printArea .title .zh{font-size:15px;letter-spacing:.1em;font-weight:600}
+#printArea .dept{
+  display:flex;justify-content:space-between;font-size:13px;
+  margin:8px 0 12px;font-weight:600;
+}
+#printArea .info{
+  display:grid;grid-template-columns:1.6fr 1.4fr 1.6fr;gap:0;
+  border-top:1.5px solid #000;border-bottom:1.5px solid #000;
+  font-size:13px;
+}
+#printArea .info .cell{
+  padding:7px 8px;border-right:1px solid #000;display:flex;flex-wrap:wrap;align-items:baseline;gap:4px;
+}
+#printArea .info .cell:last-child{border-right:none}
+#printArea .info .k{font-weight:700;white-space:nowrap}
+#printArea .info .k .zh{font-weight:400;font-size:11px}
+#printArea .info .v{font-weight:600;flex:1;min-width:60px;border-bottom:1px dotted #666;padding:0 3px}
+#printArea table.ot{
+  width:100%;border-collapse:collapse;margin-top:0;font-size:12.5px;
+}
+#printArea table.ot th,#printArea table.ot td{
+  border:1px solid #000;padding:6px 6px;text-align:center;vertical-align:middle;
+}
+#printArea table.ot th{background:#f1f5f9;font-weight:700;font-size:12px}
+#printArea table.ot td.l{text-align:left;padding-left:8px}
+#printArea table.ot .sum td{font-weight:700;background:#f8fafc;text-align:right}
+#printArea table.ot .sum td.n{text-align:center}
+#printArea .note{font-size:11.5px;margin:10px 0 4px;line-height:1.5}
+#printArea .note b{font-weight:700}
+#printArea .sign{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:8px;
+  margin-top:22px;font-size:12.5px;text-align:center;
+}
+#printArea .sign .s{font-weight:600;line-height:1.4}
+#printArea .sign .s .zh{font-weight:400;font-size:11px;display:block}
+#printArea .sign .line{height:52px}
+
+.empty-hint{
+  text-align:center;padding:30px 16px;color:var(--muted);font-size:14px;
+}
+.empty-hint svg{width:40px;height:40px;opacity:.4;margin-bottom:10px}
+
+/* ---------- Print ---------- */
+@media print{
+  body *{visibility:hidden}
+  #printArea,#printArea *{visibility:visible}
+  #printArea{
+    position:absolute;left:0;top:0;width:100%;
+    box-shadow:none;padding:20mm 16mm;margin:0;
+  }
+  .preview-wrap{background:#fff;padding:0}
+  @page{size:A4 portrait;margin:8mm}
+}
+@media (max-width:420px){
+  .grid2{grid-template-columns:1fr 1fr}
+  #printArea{padding:20px 16px}
+  #printArea .info{grid-template-columns:1fr}
+  #printArea .info .cell{border-right:none;border-bottom:1px solid #000}
+  #printArea .info .cell:last-child{border-bottom:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Header -->
+  <div class="topbar">
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+    </div>
+    <div>
+      <h1>Đăng ký Tăng ca</h1>
+      <p>Công ty TNHH Credible Việt Nam · 可悦（越南）有限公司</p>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" data-tab="form">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg>
+      Điền thông tin
+    </button>
+    <button class="tab" data-tab="preview">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
+      Xem trước & Xuất
+    </button>
+  </div>
+
+  <!-- ============ FORM PANE ============ -->
+  <div class="pane active" id="pane-form">
+
+    <div class="card">
+      <h2><span class="dot"></span>Thông tin nhân viên</h2>
+      <div class="grid2">
+        <div class="field">
+          <label>Họ tên <span class="zh">姓名</span></label>
+          <input type="text" id="fName" placeholder="Nguyễn Văn A" autocomplete="off">
+        </div>
+        <div class="field">
+          <label>Mã số thẻ <span class="zh">工号</span></label>
+          <input type="text" id="fCode" placeholder="V25066" autocomplete="off">
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label>Bộ phận <span class="zh">部门</span></label>
+          <input type="text" id="fDept" list="deptList" placeholder="Kỹ thuật sản xuất" autocomplete="off">
+          <datalist id="deptList">
+            <option value="Kỹ thuật sản xuất"><option value="Sản xuất"><option value="Kế toán">
+            <option value="Hành chính nhân sự"><option value="Kho vận"><option value="Công nghệ">
+            <option value="Bảo trì"><option value="QC"><option value="Mua hàng">
+          </datalist>
+        </div>
+        <div class="field">
+          <label>Chức vụ <span class="zh">职务</span></label>
+          <input type="text" id="fPos" list="posList" placeholder="Kỹ sư" autocomplete="off">
+          <datalist id="posList">
+            <option value="Công nhân"><option value="Kỹ thuật viên"><option value="Kỹ sư">
+            <option value="Tổ trưởng"><option value="Trưởng bộ phận"><option value="Kế toán viên">
+          </datalist>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="dot"></span>Danh sách tăng ca <span class="count" id="entryCount">0 lần</span></h2>
+      <div id="entries"></div>
+      <button class="add-btn" id="addEntry">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        Thêm ngày tăng ca
+      </button>
+    </div>
+
+    <div class="total-bar">
+      <span class="lbl">Tổng số giờ tăng ca</span>
+      <span class="val" id="totalHours">0<small>giờ</small></span>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-ghost" id="saveDraft">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/></svg>
+        Lưu nháp
+      </button>
+      <button class="btn btn-danger" id="resetAll">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+        Xóa hết
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ PREVIEW PANE ============ -->
+  <div class="pane" id="pane-preview">
+    <div id="previewEmpty" class="card empty-hint">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+      <div>Chưa có dữ liệu. Vui lòng điền thông tin ở tab <b>Điền thông tin</b>.</div>
+    </div>
+
+    <div id="previewContent" style="display:none">
+      <div class="preview-wrap">
+        <div id="printArea">
+          <div class="co">CÔNG TY TNHH CREDIBLE VIỆT NAM<br><span class="zh">可悦（越南）有限公司</span></div>
+          <div class="title">ĐƠN XIN TĂNG CA<br><span class="zh">自愿加班申请单</span></div>
+          <div class="dept">
+            <span>Bộ phận: <span id="pDept">_______________</span></span>
+            <span class="zh">部门: <span id="pDeptZh">________</span></span>
+          </div>
+          <div class="info">
+            <div class="cell"><span class="k">Họ tên <span class="zh">姓名</span>:</span><span class="v" id="pName"></span></div>
+            <div class="cell"><span class="k">Mã số thẻ <span class="zh">工号</span>:</span><span class="v" id="pCode"></span></div>
+            <div class="cell"><span class="k">Chức vụ <span class="zh">职务/职称</span>:</span><span class="v" id="pPos"></span></div>
+          </div>
+          <table class="ot">
+            <thead>
+              <tr>
+                <th style="width:8%">STT</th>
+                <th style="width:16%">Ngày tháng<br><span style="font-weight:400;font-size:10px">日期</span></th>
+                <th style="width:22%">Thời gian tăng ca<br><span style="font-weight:400;font-size:10px">加班时间</span></th>
+                <th style="width:12%">Số tiếng TC<br><span style="font-weight:400;font-size:10px">工时</span></th>
+                <th>Chú thích<br><span style="font-weight:400;font-size:10px">备注</span></th>
+              </tr>
+            </thead>
+            <tbody id="pRows"></tbody>
+            <tfoot>
+              <tr class="sum"><td colspan="3">TỔNG CỘNG</td><td class="n" id="pTotal">0</td><td></td></tr>
+            </tfoot>
+          </table>
+          <div class="note"><b>Ghi chú / 备注:</b> 1. CNV chú thích đầy đủ ca làm việc (hành chính, ca ngày, ca đêm, chủ nhật). <span style="font-size:10.5px">员工需完整注明工作班次（行政班、日班、夜班、周日班）。</span></div>
+          <div class="sign">
+            <div><div class="s">Người xin<span class="zh">申请人</span></div><div class="line"></div></div>
+            <div><div class="s">Người xác nhận<span class="zh">审核人</span></div><div class="line"></div></div>
+            <div><div class="s">Quản lý bộ phận<span class="zh">部门经理</span></div><div class="line"></div></div>
+            <div><div class="s">Hành chính nhân sự<span class="zh">行政人事</span></div><div class="line"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="actions" style="grid-template-columns:1fr 1fr">
+        <button class="btn btn-ok" id="btnPrint">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          In / Lưu PDF
+        </button>
+        <button class="btn btn-primary" id="btnExcel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/></svg>
+          Xuất file Excel
+        </button>
+      </div>
+      <div class="card" style="font-size:12.5px;color:var(--muted);padding:12px 16px">
+        <b style="color:var(--text)">Hướng dẫn:</b> Chọn <b>In / Lưu PDF</b> → ở mục máy in chọn <b>"Lưu thành PDF"</b> để có file trình ký. Hoặc <b>Xuất file Excel</b> để gửi bộ phận HCNS.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+  <span id="toastMsg">Đã lưu</span>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var SHIFTS = ["Hành chính","Ca ngày","Ca đêm","Chủ nhật"];
+  var entries = [];
+  var STORAGE_KEY = "tangca_draft_v1";
+
+  var $ = function(id){ return document.getElementById(id); };
+
+  /* ---------- Toast ---------- */
+  var toastTimer = null;
+  function toast(msg){
+    var t = $("toast");
+    $("toastMsg").textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2200);
+  }
+
+  /* ---------- Tabs ---------- */
+  document.querySelectorAll(".tab").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var tab = btn.getAttribute("data-tab");
+      document.querySelectorAll(".tab").forEach(function(b){ b.classList.toggle("active", b===btn); });
+      $("pane-form").classList.toggle("active", tab==="form");
+      $("pane-preview").classList.toggle("active", tab==="preview");
+      if(tab==="preview") renderPreview();
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+  });
+
+  /* ---------- Hours calc ---------- */
+  function calcHours(start, end){
+    if(!start || !end) return 0;
+    var s = start.split(":").map(Number), e = end.split(":").map(Number);
+    var mins = (e[0]*60+e[1]) - (s[0]*60+s[1]);
+    if(mins < 0) mins += 24*60; // cross midnight
+    return Math.round(mins/60*10)/10;
+  }
+
+  /* ---------- Entry rendering ---------- */
+  function renderEntries(){
+    var box = $("entries");
+    box.innerHTML = "";
+    entries.forEach(function(en, i){
+      var div = document.createElement("div");
+      div.className = "entry";
+      div.innerHTML =
+        '<div class="entry-head">' +
+          '<span class="entry-num">'+(i+1)+'</span>' +
+          '<span class="shift-tag" data-shift="'+i+'">'+(en.shift||'Hành chính')+'</span>' +
+          '<button class="del" data-del="'+i+'" title="Xóa">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>' +
+          '</button>' +
+        '</div>' +
+        '<div class="grid2">' +
+          '<div class="field"><label>Ngày tăng ca</label><input type="date" data-f="date" data-i="'+i+'" value="'+(en.date||'')+'"></div>' +
+          '<div class="field"><label>Ca làm việc</label>' +
+            '<select data-f="shift" data-i="'+i+'">' +
+              SHIFTS.map(function(s){ return '<option value="'+s+'"'+(en.shift===s?' selected':'')+'>'+s+'</option>'; }).join("") +
+            '</select>' +
+          '</div>' +
+        '</div>' +
+        '<div class="grid2">' +
+          '<div class="field"><label>Từ giờ</label><input type="time" data-f="start" data-i="'+i+'" value="'+(en.start||'')+'"></div>' +
+          '<div class="field"><label>Đến giờ</label><input type="time" data-f="end" data-i="'+i+'" value="'+(en.end||'')+'"></div>' +
+        '</div>' +
+        '<div class="field" style="margin-top:10px"><label>Nội dung / Lý do tăng ca</label><textarea data-f="reason" data-i="'+i+'" rows="1" placeholder="Ví dụ: Đóng sổ tháng 9 — Hành chính">'+(en.reason||'')+'</textarea></div>' +
+        '<div class="hours">' +
+          '<span class="lbl">Số giờ tăng ca</span>' +
+          '<input type="number" step="0.5" min="0" data-f="hours" data-i="'+i+'" value="'+(en.hours!=null?en.hours:'')+'">' +
+          '<span class="unit">giờ (tự tính, có thể sửa)</span>' +
+        '</div>';
+      box.appendChild(div);
+    });
+    $("entryCount").textContent = entries.length + " lần";
+    updateTotal();
+  }
+
+  function updateTotal(){
+    var t = entries.reduce(function(s,e){ return s + (parseFloat(e.hours)||0); }, 0);
+    t = Math.round(t*10)/10;
+    $("totalHours").innerHTML = t + '<small>giờ</small>';
+    return t;
+  }
+
+  /* ---------- Event delegation for entries ---------- */
+  $("entries").addEventListener("input", function(ev){
+    var t = ev.target;
+    var i = t.getAttribute("data-i");
+    var f = t.getAttribute("data-f");
+    if(i==null || f==null) return;
+    i = Number(i);
+    if(f==="start" || f==="end"){
+      entries[i][f] = t.value;
+      // auto-recalc hours only if user hasn't manually edited? always recalc
+      var h = calcHours(entries[i].start, entries[i].end);
+      if(h>0){
+        entries[i].hours = h;
+        var hi = document.querySelector('input[data-f="hours"][data-i="'+i+'"]');
+        if(hi) hi.value = h;
+      }
+    } else if(f==="hours"){
+      entries[i].hours = t.value;
+    } else {
+      entries[i][f] = t.value;
+    }
+    if(f==="shift"){
+      var tag = document.querySelector('.shift-tag[data-shift="'+i+'"]');
+      if(tag) tag.textContent = t.value;
+    }
+    updateTotal();
+  });
+  $("entries").addEventListener("change", function(ev){
+    var t = ev.target;
+    var i = t.getAttribute("data-i");
+    var f = t.getAttribute("data-f");
+    if(i==null || f==null) return;
+    i = Number(i);
+    entries[i][f] = t.value;
+    if(f==="shift"){
+      var tag = document.querySelector('.shift-tag[data-shift="'+i+'"]');
+      if(tag) tag.textContent = t.value;
+    }
+    updateTotal();
+  });
+  $("entries").addEventListener("click", function(ev){
+    var del = ev.target.closest("[data-del]");
+    if(del){
+      var i = Number(del.getAttribute("data-del"));
+      entries.splice(i,1);
+      renderEntries();
+    }
+  });
+
+  /* ---------- Add / reset ---------- */
+  $("addEntry").addEventListener("click", function(){
+    var today = new Date().toISOString().slice(0,10);
+    entries.push({date:today, start:"17:30", end:"19:30", hours:2, shift:"Hành chính", reason:""});
+    renderEntries();
+    var last = document.querySelectorAll("#entries .entry");
+    if(last.length){ last[last.length-1].scrollIntoView({behavior:"smooth", block:"center"}); }
+  });
+
+  $("resetAll").addEventListener("click", function(){
+    if(!confirm("Xóa toàn bộ thông tin đã nhập?")) return;
+    entries = [];
+    ["fName","fCode","fDept","fPos"].forEach(function(id){ $(id).value=""; });
+    renderEntries();
+    localStorage.removeItem(STORAGE_KEY);
+    toast("Đã xóa toàn bộ");
+  });
+
+  /* ---------- Save / load draft ---------- */
+  function collectInfo(){
+    return {name:$("fName").value.trim(), code:$("fCode").value.trim(), dept:$("fDept").value.trim(), pos:$("fPos").value.trim()};
+  }
+  $("saveDraft").addEventListener("click", function(){
+    var data = {info:collectInfo(), entries:entries};
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    toast("Đã lưu nháp trên máy này");
+  });
+  function loadDraft(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      var data = JSON.parse(raw);
+      if(data.info){
+        $("fName").value = data.info.name||"";
+        $("fCode").value = data.info.code||"";
+        $("fDept").value = data.info.dept||"";
+        $("fPos").value = data.info.pos||"";
+      }
+      if(Array.isArray(data.entries)) entries = data.entries;
+    }catch(e){}
+  }
+
+  /* ---------- Info input → autosave lightly ---------- */
+  ["fName","fCode","fDept","fPos"].forEach(function(id){
+    $(id).addEventListener("input", function(){ /* no-op, save on button */ });
+  });
+
+  /* ---------- Preview ---------- */
+  function fmtDate(iso){
+    if(!iso) return "__/__";
+    var p = iso.split("-");
+    return p[2]+"/"+p[1];
+  }
+  function renderPreview(){
+    var info = collectInfo();
+    var hasData = (info.name || entries.length>0);
+    $("previewEmpty").style.display = hasData ? "none" : "block";
+    $("previewContent").style.display = hasData ? "block" : "none";
+    if(!hasData) return;
+
+    $("pName").textContent = info.name || "_______________";
+    $("pCode").textContent = info.code || "________";
+    $("pPos").textContent = info.pos || "_______________";
+    $("pDept").textContent = info.dept || "_______________";
+    $("pDeptZh").textContent = info.dept || "________";
+
+    var tbody = $("pRows");
+    tbody.innerHTML = "";
+    var minRows = 6;
+    var n = Math.max(entries.length, minRows);
+    for(var i=0;i<n;i++){
+      var tr = document.createElement("tr");
+      var en = entries[i];
+      var note = en ? ((en.reason?en.reason+" — ":"") + (en.shift||"")) : "";
+      tr.innerHTML =
+        "<td>"+(en?(i+1):(i+1))+"</td>" +
+        "<td>"+(en?fmtDate(en.date):"")+"</td>" +
+        "<td>"+(en && en.start && en.end ? en.start+" - "+en.end : "")+"</td>" +
+        "<td>"+(en && en.hours ? en.hours : "")+"</td>" +
+        '<td class="l">'+note+'</td>';
+      tbody.appendChild(tr);
+    }
+    $("pTotal").textContent = updateTotal();
+  }
+
+  /* ---------- Print ---------- */
+  $("btnPrint").addEventListener("click", function(){
+    renderPreview();
+    setTimeout(function(){ window.print(); }, 150);
+  });
+
+  /* ---------- Excel export ---------- */
+  $("btnExcel").addEventListener("click", function(){
+    if(typeof XLSX === "undefined"){ toast("Thư viện Excel chưa tải, thử lại"); return; }
+    var info = collectInfo();
+    var total = updateTotal();
+
+    var aoa = [];
+    aoa.push(["CÔNG TY TNHH CREDIBLE VIỆT NAM"]);
+    aoa.push(["可悦（越南）有限公司"]);
+    aoa.push(["ĐƠN XIN TĂNG CA / 自愿加班申请单"]);
+    aoa.push(["Bộ phận (部门): " + (info.dept||"")]);
+    aoa.push([]);
+    aoa.push(["Họ tên (姓名):", info.name||"", "", "Mã số thẻ (工号):", info.code||"", "", "Chức vụ (职务):", info.pos||""]);
+    aoa.push([]);
+    aoa.push(["STT","Ngày tháng (日期)","Thời gian tăng ca (加班时间)","Số tiếng TC (工时)","","Chú thích (备注)"]);
+    var n = Math.max(entries.length, 6);
+    for(var i=0;i<n;i++){
+      var en = entries[i];
+      var note = en ? ((en.reason?en.reason+" — ":"") + (en.shift||"")) : "";
+      aoa.push([
+        i+1,
+        en?fmtDate(en.date):"",
+        en && en.start && en.end ? en.start+"-"+en.end : "",
+        en && en.hours ? Number(en.hours) : "",
+        "",
+        note
+      ]);
+    }
+    aoa.push(["","","TỔNG CỘNG", total, "", ""]);
+    aoa.push([]);
+    aoa.push(["Ghi chú / 备注: 1. CNV chú thích đầy đủ ca làm việc (hành chính, ca ngày, ca đêm, chủ nhật). 员工需完整注明工作班次（行政班、日班、夜班、周日班）。"]);
+    aoa.push([]);
+    aoa.push([]);
+    aoa.push(["Người xin (申请人)","","Người xác nhận (审核人)","","Quản lý bộ phận (部门经理)","","Hành chính nhân sự (行政人事)"]);
+
+    var ws = XLSX.utils.aoa_to_sheet(aoa);
+    ws['!cols'] = [{wch:6},{wch:16},{wch:22},{wch:14},{wch:3},{wch:40},{wch:18},{wch:18}];
+    ws['!merges'] = [
+      {s:{r:0,c:0},e:{r:0,c:5}},
+      {s:{r:1,c:0},e:{r:1,c:5}},
+      {s:{r:2,c:0},e:{r:2,c:5}},
+      {s:{r:3,c:0},e:{r:3,c:5}},
+      {s:{r:5,c:1},e:{r:5,c:2}},
+      {s:{r:5,c:4},e:{r:5,c:5}},
+      {s:{r:5,c:7},e:{r:5,c:7}}
+    ];
+    var wb = XLSX.utils.book_new();
+    var sheetName = (info.name||"DonTangCa").substring(0,25).replace(/[\\\/\?\*\[\]]/g,"_");
+    XLSX.utils.book_append_sheet(wb, ws, sheetName);
+    var fname = "DonTangCa_" + (info.name?info.name.replace(/\s+/g,"_"):"") + "_" + new Date().toISOString().slice(0,10) + ".xlsx";
+    XLSX.writeFile(wb, fname);
+    toast("Đã xuất file Excel");
+  });
+
+  /* ---------- Init ---------- */
+  loadDraft();
+  if(entries.length===0){
+    var today = new Date().toISOString().slice(0,10);
+    entries.push({date:today, start:"17:30", end:"19:30", hours:2, shift:"Hành chính", reason:""});
+  }
+  renderEntries();
+})();
+</script>
+</body>
+</html>
